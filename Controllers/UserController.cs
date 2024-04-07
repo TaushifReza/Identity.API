@@ -31,14 +31,18 @@ namespace Identity.API.Controllers
             if (result.Succeeded)
             {
                 var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var message = new MailMessage("ecoshop420@gmail.com", user.Email, "Please Confirm your email",
+                /*var message = new MailMessage("ecoshop420@gmail.com", user.Email, "Please Confirm your email",
                     $"Please click on this link to confirm your email address: {confirmationToken}");
                 using (var emailClient = new SmtpClient("smtp.gmail.com", 587))
                 {
                     emailClient.Credentials = new NetworkCredential("ecoshop420@gmail.com", "heaxhbpdjeszzhfy");
                     await emailClient.SendMailAsync(message);
-                }
-                return Ok(confirmationToken ?? "User  Created");
+                }*/
+                return Ok(value: new
+                {
+                    userId = user.Id,
+                    token = confirmationToken
+                });
             }
 
             return BadRequest(result.Errors);
@@ -64,7 +68,7 @@ namespace Identity.API.Controllers
             return BadRequest("Login Failed");
         }
 
-        [HttpGet]
+        [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
