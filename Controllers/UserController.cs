@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,26 +11,29 @@ namespace Identity.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        public UserController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             this._userManager = userManager;
             this._signInManager = signInManager;
         }
         [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser(string email, string password)
+        public async Task<IActionResult> CreateUser(string email, string password, string fullName)
         {
-            var user = new IdentityUser
+            var user = new User
             {
                 Email = email,
-                UserName = email
+                UserName = email,
+                FullName = fullName
             };
+            var claimDepartment = new Claim("Department", "Development");
 
             var result = await this._userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
             {
+                await _userManager.AddClaimAsync(user, claimDepartment);
                 var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 /*var message = new MailMessage("ecoshop420@gmail.com", user.Email, "Please Confirm your email",
                     $"Please click on this link to confirm your email address: {confirmationToken}");
@@ -81,7 +85,7 @@ namespace Identity.API.Controllers
                 }
             }
 
-            return BadRequest("failed to validate");
+            return BadRequest("Failed to validate");
         }
     }
 }

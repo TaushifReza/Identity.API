@@ -1,3 +1,4 @@
+using Identity.API;
 using Identity.API.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
         options.Password.RequiredLength = 6;
         options.Password.RequireLowercase = true;
