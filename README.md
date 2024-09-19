@@ -1,5 +1,6 @@
 # ASP.NET Core Security Mastery
 
+
 ## Overview
 
 Welcome to the ASP.NET Core Identity repository! This project is an advanced of authentication and authorization in ASP.NET Core. This project contain how to secure the web applications and APIs both with ASP.NET Core Identity, giving a comprehensive understanding of the security mechanisms involved.
